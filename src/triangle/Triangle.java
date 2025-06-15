@@ -24,7 +24,7 @@ import static resizable.Debug.print;
  */
 public class Triangle implements ResizableImage {
     int drawTriangle = 0;
-    int IterationDepth = 0;
+    int depth = 3;
     /**
      * change this method to implement the triangle!
      * @param size the outer bounds of the triangle
@@ -53,14 +53,18 @@ public class Triangle implements ResizableImage {
 
 
     private void drawTriangle(Graphics2D gBuffer, int[] xPoints, int[] yPoints){
+        //draw main triangle (in a random RGB Color) and the one connecting the midpoitns of each edge (in gray)
         gBuffer.setColor(new Color((int)(Math.random()*255),(int)(Math.random()*255),(int)(Math.random()*255)));
         gBuffer.fillPolygon(xPoints, yPoints, 3);
-        if (IterationDepth < 3) {
-            IterationDepth++;
+        gBuffer.setColor(Color.gray);
+        gBuffer.fillPolygon(new int[]{(xPoints[0]+xPoints[1])/2,(xPoints[0]+xPoints[2])/2,(xPoints[1]+xPoints[2])/2}, new int[]{(yPoints[0]+yPoints[1])/2,yPoints[0],(yPoints[0]+yPoints[1])/2}, 3);
+        //draw recursive triangles on the outer parts
+        if (depth > 0) {
+            depth--;
             drawTriangle(gBuffer, new int[]{xPoints[0], (xPoints[0]+xPoints[1]) / 2, (xPoints[0]+xPoints[2]) / 2}, new int[]{yPoints[0], (yPoints[0]+yPoints[1])/ 2, yPoints[0]});
             drawTriangle(gBuffer, new int[]{(xPoints[0]+xPoints[1])/2, xPoints[1], (xPoints[1]+xPoints[2]) / 2}, new int[]{(yPoints[0]+yPoints[1])/2,yPoints[1],(yPoints[0]+yPoints[1])/2});
             drawTriangle(gBuffer, new int[]{(xPoints[0]+xPoints[2])/2,(xPoints[1]+xPoints[2])/2,xPoints[2]}, new int[]{yPoints[0], (yPoints[0]+yPoints[1])/ 2, yPoints[0]});
-            IterationDepth--;
+            depth++;
         }
     }
 
